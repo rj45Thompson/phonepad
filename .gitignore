@@ -10,3 +10,4 @@ unreal/test/runs/
 unreal/PhonePadTest/Plugins/
 *.sln
 .vs/
+launch/
