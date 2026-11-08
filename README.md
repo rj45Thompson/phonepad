@@ -66,7 +66,9 @@ const pads = await PhonePad.start({
 pads.show();                      // the QR box (pass place: { left: '16px', top: '16px' } to move it)
 ```
 
-- Each phone is then `navigator.getGamepads()[4 + seat]`, with `mapping === 'standard'`.
+- Each phone then appears in `navigator.getGamepads()` with `mapping === 'standard'`, after the browser's own pad slots: index 4 +
+  seat where the browser lists 4 slots, higher where it lists more (measured 8 in one headless Chrome). Find a phone by its
+  `id` (`PhonePad player N ...`), or read `pads.pads.get(seat).index`.
 - `gamepadconnected` and `gamepaddisconnected` fire as usual.
 - `gamepad.vibrationActuator.playEffect('dual-rumble', { duration: 200 })` vibrates the phone.
 - `pads.paths` and `pads.rtt` give each seat's path and measured round trip.

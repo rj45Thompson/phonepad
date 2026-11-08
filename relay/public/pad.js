@@ -305,10 +305,13 @@ class ControllerPage {
     Object.assign(steer.style, { left: '27%', right: '27%', bottom: '8%' });
     root.append(steer);
     this.slider = new SteerSlider(steer, (v) => this.state.axis(0, v));
-    const shown = Object.keys(labels).map((k) => Number(k.slice(1))).filter((i) => i !== 6 && i !== 7);
-    shown.forEach((i, n) => {                     // the game's own buttons (handbrake, camera, reset, ...) in a row
-      const w = 'min(16vh, 70px)';
-      this.key(root, i, labels['b' + i], { left: 'calc(50% + ' + ((n - (shown.length - 1) / 2) * 96) + 'px - 46px)', top: '34%', width: '92px', height: w, fontSize: '13px' }, 'key pill', true);
+    const shown = Object.keys(labels).map((k) => Number(k.slice(1))).filter((i) => i !== 6 && i !== 7).sort((a, b) => a - b);
+    const perRow = 3;                             // the game's own buttons (handbrake, camera, ...) in rows of 3: four do not fit between the pedals
+    shown.forEach((i, n) => {
+      const row = Math.floor(n / perRow), inRow = Math.min(perRow, shown.length - row * perRow), col = n % perRow;
+      const h = 'min(14vh, 56px)';
+      this.key(root, i, labels['b' + i], { left: 'calc(50% + ' + ((col - (inRow - 1) / 2) * 96) + 'px - 46px)',
+        top: 'calc(26% + ' + row + ' * (' + h + ' + 10px))', width: '92px', height: h, fontSize: '13px' }, 'key pill', true);
     });
   }
   async startTilt() {
