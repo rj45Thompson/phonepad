@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>PhonePad</title>
+<link rel="stylesheet" href="pad.css">
+</head>
+<body>
+<main id="join" class="screen">
+  <h1>PhonePad</h1>
+  <p class="lead">Your phone is the controller. Type the code the game shows.</p>
+  <form id="joinForm" autocomplete="off">
+    <input id="code" name="code" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="4" placeholder="CODE" aria-label="Room code">
+    <button id="joinBtn" type="submit">Join</button>
+  </form>
+  <p id="joinMsg" class="msg" role="status"></p>
+</main>
+<main id="pad" class="screen" hidden>
+  <div id="bar">
+    <span id="seatTag"></span>
+    <span id="link" class="dim"></span>
+    <button id="tiltBtn" type="button" hidden>Tilt to steer</button>
+  </div>
+  <div id="controls"></div>
+  <div id="rotate">Turn your phone sideways</div>
+</main>
+<div id="overlay" hidden><div id="overlayBox"><p id="overlayText"></p><button id="overlayBtn" type="button"></button></div></div>
+<script type="module" src="pad.js"></script>
+</body>
+</html>

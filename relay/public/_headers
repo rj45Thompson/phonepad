@@ -1,0 +1,9 @@
+/phonepad-host.js
+  Access-Control-Allow-Origin: *
+  Cache-Control: no-cache
+/pad.js
+  Cache-Control: no-cache
+/pad.css
+  Cache-Control: no-cache
+/
+  Cache-Control: no-cache

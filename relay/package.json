@@ -1,0 +1,17 @@
+{
+  "name": "phonepad-relay",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/rules.test.mjs",
+    "e2e": "node test/e2e.mjs",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "qrcode-generator": "1.4.4"
+  },
+  "devDependencies": {
+    "wrangler": "4.158.0",
+    "ws": "^8.18.3"
+  }
+}

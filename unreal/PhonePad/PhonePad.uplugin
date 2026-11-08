@@ -1,0 +1,21 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "PhonePad",
+	"Description": "Phones as gamepads: players scan a QR code and their phone's browser becomes a controller. Each phone reaches the game as an ordinary gamepad (Gamepad_* keys), so no input code changes.",
+	"Category": "Input Devices",
+	"CreatedBy": "PhonePad contributors",
+	"DocsURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "PhonePad",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [ "Win64", "Mac", "Linux" ]
+		}
+	]
+}

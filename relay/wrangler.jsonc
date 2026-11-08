@@ -1,0 +1,18 @@
+{
+  // PhonePad relay: rooms (src/room.js), the phone's controller page and phonepad-host.js (public/). Deploy: npx wrangler deploy
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "phonepad-relay",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-18",
+  "observability": { "enabled": true },
+  "assets": { "directory": "./public" },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+  "vars": {
+    // the web pages allowed to open a room: put your game's origin here, e.g. "https://you.github.io" ("*" lets any page use
+    // your relay). The defaults are local dev servers; 127.0.0.1:8833 is test/serve.mjs.
+    "HOST_ORIGINS": "http://localhost:8080,http://127.0.0.1:8080,http://127.0.0.1:8833",
+    // a program that sends no Origin header (an Unreal game) may open a room
+    "ALLOW_NO_ORIGIN_HOSTS": "true"
+  }
+}

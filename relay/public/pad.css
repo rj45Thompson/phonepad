@@ -1,0 +1,44 @@
+:root { --bg: #0d0f14; --fg: #e9edf5; --dim: #8a93a6; --line: #2a3040; --key: #1b2030; --keyOn: #3a4560;
+  --a: #2fbf71; --b: #e5484d; --x: #3e8ed0; --y: #f2c94c; --gas: #2fbf71; --brake: #e5484d; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }            /* the screens set display, which would otherwise beat the hidden attribute */
+html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 16px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+  overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.screen { position: fixed; inset: 0; padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+#join { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding-inline: 16px; text-align: center; }
+#join h1 { margin: 0; font-size: 28px; letter-spacing: .02em; }
+.lead { margin: 0; color: var(--dim); max-width: 22em; }
+#joinForm { display: flex; gap: 8px; }
+#code { width: 6.2em; font: 600 28px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .25em; text-transform: uppercase; text-align: center;
+  padding: 10px 8px; border-radius: 10px; border: 2px solid var(--line); background: #141824; color: var(--fg); }
+button { font: inherit; color: var(--fg); background: var(--key); border: 2px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+#joinBtn { font-weight: 600; background: #24304a; }
+.msg { min-height: 1.4em; margin: 0; color: var(--y); }
+.dim { color: var(--dim); }
+#pad { touch-action: none; }
+#bar { position: absolute; top: calc(env(safe-area-inset-top) + 6px); left: 0; right: 0; display: flex; gap: 12px; align-items: center; justify-content: center;
+  font-size: 13px; pointer-events: none; z-index: 2; }
+#bar button { pointer-events: auto; padding: 6px 12px; font-size: 13px; }
+#seatTag { font-weight: 700; padding: 3px 10px; border-radius: 99px; background: var(--key); }
+#controls { position: absolute; inset: 0; touch-action: none; }
+#rotate { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; background: var(--bg); font-size: 20px; z-index: 5; }
+@media (orientation: portrait) { #pad:not([hidden]) #rotate { display: flex; } }
+.key { position: absolute; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--key); border: 2px solid var(--line);
+  font-weight: 700; touch-action: none; }
+.key.on { background: var(--keyOn); transform: scale(.94); }
+.key small { position: absolute; bottom: -1.5em; font-size: 11px; font-weight: 500; color: var(--dim); white-space: nowrap; }
+.pill { border-radius: 14px; }
+.zone { position: absolute; touch-action: none; }
+.stickBase, .stickKnob { position: absolute; border-radius: 50%; pointer-events: none; }
+.stickBase { width: 120px; height: 120px; margin: -60px 0 0 -60px; border: 2px solid var(--line); background: rgba(255,255,255,.03); }
+.stickKnob { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: var(--keyOn); }
+.hint { position: absolute; color: var(--dim); font-size: 12px; pointer-events: none; }
+.pedal { position: absolute; border-radius: 16px; border: 2px solid var(--line); background: var(--key); touch-action: none; overflow: hidden; }
+.pedal .fill { position: absolute; left: 0; right: 0; bottom: 0; height: 0; opacity: .55; }
+.pedal span { position: absolute; left: 0; right: 0; top: 10px; text-align: center; font-weight: 700; }
+.steer { position: absolute; height: 64px; border-radius: 32px; border: 2px solid var(--line); background: var(--key); touch-action: none; }
+.steer .mark { position: absolute; top: 6px; bottom: 6px; width: 48px; margin-left: -24px; left: 50%; border-radius: 26px; background: var(--keyOn); }
+.steer.tilt { opacity: .7; }
+#overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(5,6,10,.86); z-index: 10; padding: 16px; }
+#overlayBox { max-width: 26em; text-align: center; }
+#overlayBox p { font-size: 18px; }

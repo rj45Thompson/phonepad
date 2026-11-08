@@ -1,0 +1,12 @@
+node_modules/
+.wrangler/
+.e2e-state/
+relay/wrangler.deploy.jsonc
+unreal/**/Binaries/
+unreal/**/Intermediate/
+unreal/**/Saved/
+unreal/**/DerivedDataCache/
+unreal/test/runs/
+unreal/PhonePadTest/Plugins/
+*.sln
+.vs/

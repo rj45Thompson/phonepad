@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PhonePad host test</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 16px; background: #10131a; color: #e9edf5; font: 14px/1.4 system-ui, sans-serif; }
+  pre { background: #161b26; padding: 10px; border-radius: 8px; white-space: pre-wrap; max-height: 40vh; overflow: auto; }
+</style>
+</head>
+<body>
+<h1>PhonePad host test</h1>
+<p>Plays a game's side: phones that join show up below exactly as <code>navigator.getGamepads()</code> reports them.
+Relay: <code id="relay"></code></p>
+<h2>navigator.getGamepads()</h2>
+<pre id="pads">starting...</pre>
+<h2>every change, in order</h2>
+<pre id="log"></pre>
+<script type="module">
+  const relay = new URLSearchParams(location.search).get('relay') || 'http://127.0.0.1:8831';   // wrangler dev; ?relay=<your relay> for a deployed one
+  document.getElementById('relay').textContent = relay;
+  const { PhonePad } = await import(relay + '/phonepad-host.js');
+  const log = [];
+  const say = (s) => { log.push((performance.now() / 1000).toFixed(2) + 's ' + s); document.getElementById('log').textContent = log.slice(-60).join('\n'); };
+  window.addEventListener('gamepadconnected', (e) => say('gamepadconnected ' + e.gamepad.id + ' index ' + e.gamepad.index));
+  window.addEventListener('gamepaddisconnected', (e) => say('gamepaddisconnected ' + e.gamepad.id));
+  const pads = await PhonePad.start({ relay, layout: new URLSearchParams(location.search).get('layout') || 'drive', seats: 4,
+    labels: { b4: 'Handbrake', b8: 'Camera', b9: 'Reset' } });
+  window.pads = pads; window.changes = log;
+  window.rx = [];                                  // every state that arrived, with its path: frames stop in a background tab, messages do not
+  const onMessage = pads.onMessage.bind(pads);
+  pads.onMessage = (m, direct) => {
+    if (m.t === 's') window.rx.push({ at: Math.round(performance.now()), path: direct ? 'direct' : 'relay', b: m.b, a0: m.a[0], lt: m.p[0], rt: m.p[1] });
+    onMessage(m, direct);
+  };
+  pads.show();
+  say('room ' + pads.code + ' ' + pads.join);
+  let last = '';
+  const frame = () => {
+    const list = navigator.getGamepads();
+    const lines = [];
+    list.forEach((g, i) => {
+      if (!g) return;
+      const pressed = g.buttons.map((b, k) => (b.value ? k + '=' + Math.round(b.value * 100) / 100 : '')).filter(Boolean).join(' ');
+      lines.push('[' + i + '] ' + g.id + ' | axes ' + g.axes.map((a) => a.toFixed(2)).join(' ') + ' | buttons ' + (pressed || '-') +
+        ' | path ' + (pads.paths.get(g.seat) || '-') + ' | rtt ' + (pads.rtt.has(g.seat) ? Math.round(pads.rtt.get(g.seat)) + ' ms' : '-'));
+    });
+    const now = lines.join('\n') || '(no pads)';
+    if (now !== last) { document.getElementById('pads').textContent = now; for (const l of lines) say(l); last = now; }
+    requestAnimationFrame(frame);
+  };
+  frame();
+</script>
+</body>
+</html>
