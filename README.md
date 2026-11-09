@@ -64,6 +64,7 @@ const pads = await PhonePad.start({
   labels: { b4: 'Handbrake' },    // optional names for buttons, keyed by W3C standard index
 });
 pads.show();                      // the QR box (pass place: { left: '16px', top: '16px' } to move it)
+pads.show(document.body, { qr: 96, compact: true });   // smaller: the QR width in px (64-320), compact = QR and code only
 ```
 
 - Each phone then appears in `navigator.getGamepads()` with `mapping === 'standard'`, after the browser's own pad slots: index 4 +

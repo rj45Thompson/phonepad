@@ -5,6 +5,7 @@
 //   import { PhonePad } from 'https://<your relay>/phonepad-host.js';
 //   const pads = await PhonePad.start({ relay: 'https://<your relay>', layout: 'drive', seats: 4, labels: { b4: 'Handbrake' } });
 //   pads.show();   // the QR code and room code over the game; pads.hide() takes it away
+//   pads.show(document.body, { qr: 96, compact: true });   // a smaller box: QR width in px (64-320), compact = QR and code only
 //
 // Classes: PhonePad (the room and its socket), VirtualGamepad (one phone, shaped like a Gamepad), JoinOverlay (the QR box).
 
@@ -86,15 +87,30 @@ class JoinOverlay {                               // UC-1.1: the QR code, the ad
     this.seats = document.createElement('div');
     this.seats.style.cssText = 'margin-top:6px;color:#8a93a6';
     el.append(this.canvas, this.text, this.seats);
+    this.compact = false;
+  }
+  size(qr, compact) {                             // the QR code's width; the box is that plus its padding, the text shrinks with it
+    this.compact = compact;
+    const small = compact || qr < 140;
+    this.canvas.style.width = this.canvas.style.height = qr + 'px';
+    this.canvas.style.marginBottom = small ? '4px' : '8px';
+    this.el.style.padding = small ? '8px' : '12px';
+    this.el.style.maxWidth = Math.max(qr + (small ? 16 : 24), compact ? 0 : 200) + 'px';
+    this.el.style.fontSize = small ? '11px' : '13px';
   }
   render() {
     const p = this.pads;
     if (p.error) { this.canvas.style.display = 'none'; this.text.textContent = p.error; this.seats.textContent = ''; return; }
     this.canvas.style.display = 'block';
     p.drawQR(this.canvas, 6);
-    this.text.innerHTML = 'Scan with your phone, or open<br><b></b><br>and type <b style="font-size:20px;letter-spacing:.15em"></b>';
-    const b = this.text.querySelectorAll('b');
-    b[0].textContent = new URL(p.join).host; b[1].textContent = p.code;
+    if (this.compact) {                             // the code alone, for a small corner: a scanner needs no address
+      this.text.innerHTML = '<b style="font-size:16px;letter-spacing:.15em"></b>';
+      this.text.querySelector('b').textContent = p.code;
+    } else {
+      this.text.innerHTML = 'Scan with your phone, or open<br><b></b><br>and type <b style="font-size:20px;letter-spacing:.15em"></b>';
+      const b = this.text.querySelectorAll('b');
+      b[0].textContent = new URL(p.join).host; b[1].textContent = p.code;
+    }
     const on = [...p.pads.values()].filter((g) => g.connected).map((g) => {
       const rtt = p.rtt.get(g.seat);
       return 'Player ' + (g.seat + 1) + ': ' + (p.paths.get(g.seat) || 'relay') + (rtt !== undefined ? ', ' + Math.round(rtt) + ' ms round trip' : '');
@@ -239,7 +255,14 @@ export class PhonePad {
     for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (bits[r * n + k] === '1') c.fillRect((k + quiet) * scale, (r + quiet) * scale, scale, scale);
   }
 
-  show(parent = document.body) { this.overlay.render(); parent.append(this.overlay.el); }
+  // show(parent, { qr, compact }): qr = the QR code's width in CSS px (64-320, default 180; the box fits round it), compact = only
+  // the QR code and the room code, without the address lines. Calling it again re-sizes the box in place.
+  show(parent = document.body, { qr = 180, compact = false } = {}) {
+    if (!Number.isFinite(qr) || qr < 64 || qr > 320) throw new Error('PhonePad.show: qr must be a width in px from 64 to 320, not ' + qr);
+    this.overlay.size(qr, compact);
+    this.overlay.render();
+    if (this.overlay.el.parentNode !== parent) parent.append(this.overlay.el);
+  }
   hide() { this.overlay.el.remove(); }
 
   close() {
